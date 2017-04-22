@@ -18,7 +18,9 @@
 
     <modules>
         <module>core</module>
+        <module>sample</module>
         <module>ui.apps</module>
+        
         <!-- 
 
         <module>ui.content</module>

@@ -1,4 +1,4 @@
-package de.joerghoh.aem.kafka.consumer;
+package de.joerghoh.aem.kafkasample.consumer.impl;
 
 import java.util.Iterator;
 import java.util.Properties;
@@ -13,6 +13,9 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.joerghoh.aem.kafka.consumer.AbstractConsumer;
+import de.joerghoh.aem.kafka.consumer.IncompleteKafkaConfigurationException;
+
 @Component(inherit=true,metatype=true)
 @Service
 public class SimpleStringConsumer extends AbstractConsumer<String,String> {
@@ -24,6 +27,7 @@ public class SimpleStringConsumer extends AbstractConsumer<String,String> {
 	protected void prepareProperties(Properties props) {
 	     props.put("key.deserializer", org.apache.kafka.common.serialization.StringDeserializer.class);
 	     props.put("value.deserializer", org.apache.kafka.common.serialization.StringDeserializer.class);
+	     //props.put("auto.offset.reset", "earliest");
 		
 	}
 
