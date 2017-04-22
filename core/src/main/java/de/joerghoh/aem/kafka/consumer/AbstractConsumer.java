@@ -7,11 +7,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.sling.commons.osgi.PropertiesUtil;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,18 +25,25 @@ public abstract class AbstractConsumer<K,V> implements Consumer {
 	
 	private static Logger log = LoggerFactory.getLogger(AbstractConsumer.class);
 
-	@Property
+	@Property(label="Topic", description="The kafka topic to listen for")
 	private static final String TOPICNAME = "kafka.topicName";
 	private String topicName;
 
-	@Property(cardinality=Integer.MAX_VALUE)
+	@Property(cardinality=Integer.MAX_VALUE,label="Bootstrap servers", description="The Kafka bootstrap servers")
 	private static final String BOOTSTRAP_SERVERS = "kafka.bootstrap.servers";
 	private String[] bootstrapServers;
 	
-	@Property
+	@Property(label="Group ID", description="The Kafka group ID")
 	private static final String GROUP_ID = "kafka.group.id";
 	private String groupId;
+	
+	private static final boolean DEFAULT_RANDOM_GROUP_ID = false;
+	@Property(boolValue=DEFAULT_RANDOM_GROUP_ID, label="Random Group ID", description="Use Sling ID as Group ID. Do not provide a Group ID then")
+	private static final String RANDOM_GROUP_ID = "kafka.random.group.id";
+	private boolean randomGroupId;
 
+	@Reference
+	SlingSettingsService settings;
 
 	Properties props = new Properties();
 	KafkaConsumer<K,V> consumer;
@@ -61,11 +70,18 @@ public abstract class AbstractConsumer<K,V> implements Consumer {
 		if (bootstrapServers == null || bootstrapServers.length == 0) {
 			throw new IncompleteKafkaConfigurationException ("No bootstrapServers configured");
 		}
-		
 		props.put("bootstrap.servers", StringUtils.join(bootstrapServers,","));
+		
+		
+		
 		groupId = PropertiesUtil.toString(context.getProperties().get(GROUP_ID), "");
-		if (StringUtils.isEmpty(groupId)) {
-			throw new IncompleteKafkaConfigurationException ("No groupId configured");
+		randomGroupId = PropertiesUtil.toBoolean(context.getProperties().get(RANDOM_GROUP_ID), DEFAULT_RANDOM_GROUP_ID);
+		if (randomGroupId) {
+			groupId = settings.getSlingId();
+		} else {
+			if (StringUtils.isEmpty(groupId)) {
+				throw new IncompleteKafkaConfigurationException ("No groupId configured and groupId not random");
+			}
 		}
 		props.put("group.id", groupId);
 		
@@ -78,8 +94,8 @@ public abstract class AbstractConsumer<K,V> implements Consumer {
 	}
 	
 	public String toString() {
-		return String.format("[Consumer(class=%s,topic=%s,bootstrapServers=%s,kafkaConsumer=%s)]", 
-				new Object[]{this.getClass().getName(),topicName,StringUtils.join(bootstrapServers,","),consumer});
+		return String.format("[Consumer(class=%s,topic=%s,bootstrapServers=%s,groupId=%s)]", 
+				new Object[]{this.getClass().getName(),topicName,StringUtils.join(bootstrapServers,","),groupId});
 		
 	}
 
