@@ -17,14 +17,12 @@
     <description>kafka-integration</description>
 
     <modules>
+        <module>sample-dto</module>
         <module>core</module>
         <module>sample</module>
         <module>ui.apps</module>
-        
-        <!-- 
 
-        <module>ui.content</module>
-         -->    
+        <!-- <module>ui.content</module> -->
     </modules>
 
     <properties>
@@ -498,6 +496,19 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.4</version>
+            </dependency>
+
+
+            <!-- Avro -->
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>1.8.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.servicemix.bundles</groupId>
+                <artifactId>org.apache.servicemix.bundles.avro</artifactId>
+                <version>1.8.1_1</version>
             </dependency>
 
         </dependencies>

@@ -135,6 +135,11 @@
                             <artifactId>kafka-samples</artifactId>
                             <target>/apps/kafka/install</target>
                         </embedded>
+                        <embedded>               
+                            <groupId>org.apache.servicemix.bundles</groupId>
+                            <artifactId>org.apache.servicemix.bundles.avro</artifactId>
+                            <target>/apps/kafka/install</target>
+                        </embedded>
                     </embeddeds>
                 </configuration>
             </plugin>
@@ -235,6 +240,11 @@
         <dependency>
             <groupId>com.day.cq.wcm</groupId>
             <artifactId>cq-wcm-taglib</artifactId>
+        </dependency>
+    
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.avro</artifactId>
         </dependency>
     </dependencies>
 </project>
