@@ -31,13 +31,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <instructions>
-                        <!-- <Embed-Dependency> artifactId1, artifactId2;inline=true 
-                            </Embed-Dependency> -->
-                        <Sling-Model-Packages>
-                            de.joerghoh.aem.core
-                        </Sling-Model-Packages>
-                    </instructions>
+                   
                 </configuration>
             </plugin>
         </plugins>
@@ -104,10 +98,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.adobe.aem</groupId>
-            <artifactId>aem-api</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.models.api</artifactId>
@@ -132,6 +123,21 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+        
+        <!-- 
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.commons.json</artifactId>
+        </dependency>
+        -->
+        
+                    <dependency>
+                <groupId>com.adobe.aem</groupId>
+                <artifactId>uber-jar</artifactId>
+                <classifier>apis</classifier>
+                <scope>provided</scope>
+            </dependency>
+   
 
     </dependencies>
 </project>

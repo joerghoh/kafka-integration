@@ -1,9 +1,0 @@
-{"namespace" : "de.joerghoh.aem.kafkasample.dto.news",
- "type": "record",
- "name": "News",
- "fields": [
-   { "name": "headline", "type": "string"},
-   { "name": "author", "type": "string"},
-   { "name": "text", "type": "string"}
- ]
-}

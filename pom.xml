@@ -16,18 +16,23 @@
     <version>1.0-SNAPSHOT</version>
     <description>kafka-integration</description>
 
-    <modules>
-        <module>sample-dto</module>
-        <module>core</module>
-        <module>sample</module>
-        <module>ui.apps</module>
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>http://packages.confluent.io/maven/</url>
+        </repository>
 
+    </repositories>
+
+    <modules>
+        <module>core</module>
+        <module>ui.apps</module>
         <!-- <module>ui.content</module> -->
     </modules>
 
     <properties>
         <aem.host>localhost</aem.host>
-        <aem.port>4502</aem.port>
+        <aem.port>6302</aem.port>
         <aem.publish.host>localhost</aem.publish.host>
         <aem.publish.port>4503</aem.publish.port>
         <sling.user>admin</sling.user>
@@ -421,11 +426,13 @@
             <!-- Apache Sling Dependencies -->
             <dependency>
                 <groupId>com.adobe.aem</groupId>
-                <artifactId>aem-api</artifactId>
-                <version>6.0.0.1</version>
+                <artifactId>uber-jar</artifactId>
+                <version>6.3.0</version>
+                <classifier>apis</classifier>
                 <scope>provided</scope>
             </dependency>
 
+     
             <dependency>
                 <groupId>org.apache.sling</groupId>
                 <artifactId>org.apache.sling.models.api</artifactId>
@@ -433,7 +440,7 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!-- Servlet API -->
+           
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>servlet-api</artifactId>
@@ -446,20 +453,21 @@
                 <version>2.1</version>
                 <scope>provided</scope>
             </dependency>
-            <!-- JCR -->
+           
             <dependency>
                 <groupId>javax.jcr</groupId>
                 <artifactId>jcr</artifactId>
                 <version>2.0</version>
                 <scope>provided</scope>
             </dependency>
-            <!-- Taglibs -->
+            
             <dependency>
                 <groupId>com.day.cq.wcm</groupId>
                 <artifactId>cq-wcm-taglib</artifactId>
                 <version>5.7.4</version>
                 <scope>provided</scope>
             </dependency>
+     
             <!-- Testing -->
             <dependency>
                 <groupId>junit</groupId>
@@ -471,7 +479,6 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>1.5.11</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -498,18 +505,11 @@
                 <version>3.4</version>
             </dependency>
 
-
-            <!-- Avro -->
-            <dependency>
-                <groupId>org.apache.avro</groupId>
-                <artifactId>avro</artifactId>
-                <version>1.8.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.servicemix.bundles</groupId>
-                <artifactId>org.apache.servicemix.bundles.avro</artifactId>
-                <version>1.8.1_1</version>
-            </dependency>
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.commons.json</artifactId>
+            <version>2.0.20</version>
+        </dependency>
 
         </dependencies>
     </dependencyManagement>

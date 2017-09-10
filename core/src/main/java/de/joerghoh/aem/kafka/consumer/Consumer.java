@@ -5,4 +5,6 @@ public interface Consumer {
 	
 	Runnable getRunnable();
 	
+	void stop ();
+	
 }

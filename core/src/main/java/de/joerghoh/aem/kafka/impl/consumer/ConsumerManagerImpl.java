@@ -1,5 +1,8 @@
-package de.joerghoh.aem.kafka.consumer.impl;
+package de.joerghoh.aem.kafka.impl.consumer;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.felix.scr.annotations.Activate;
@@ -43,8 +46,9 @@ public class ConsumerManagerImpl {
 	ThreadPoolManager tpm;
 	
 	ThreadPool kafkaPool;
-	
 	AtomicInteger activeThreads;
+	
+	Set<Consumer> registeredConsumers = new HashSet<>();
 	
 	
 	@Activate
@@ -60,27 +64,46 @@ public class ConsumerManagerImpl {
 	
 	@Deactivate
 	protected void deactivate () {
+		
+		// deactivate consumers
+		synchronized(registeredConsumers) {
+			Iterator<Consumer> iter = registeredConsumers.iterator();
+			while (iter.hasNext()) {
+				Consumer c = iter.next();
+				log.info("Shutting down consumer {}", c);
+				c.stop();
+			}
+		}
+		
 		tpm.release(kafkaPool);
 		log.info("KafkaPool deactivated");
+		
 	}
 	
 	
 	// SCR methods
 	
 	protected void bindConsumer (Consumer c) {
+		
+		synchronized (registeredConsumers) {
+			registeredConsumers.add(c);
+		}
 
 		log.info("Bound consumer {}", c.toString());
 		kafkaPool.execute(c.getRunnable());
-		int count = activeThreads.getAndIncrement();
-		if (count > threadpoolSize) {
+		if (registeredConsumers.size() > threadpoolSize) {
 			log.warn("Binding Consumer although no free thread available in pool (threadpoolsize = {}, currentSize = {}).",
-					new Object[]{threadpoolSize, count+1});
+					new Object[]{threadpoolSize, registeredConsumers.size()});
 		}
 		
 	}
 	
 	protected void unbindConsumer (Consumer c) {
+		synchronized(registeredConsumers) {
+			registeredConsumers.remove(c);
+		}
 		log.info("unbound consumer {}", c.toString());
+		
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -52,16 +53,17 @@ public abstract class AbstractConsumer<K,V> implements Consumer {
 
 
 	// Abstract methods
-	protected abstract void prepareProperties(Properties props);
+	public abstract Properties setupCustomProperties();
 
 
-	protected abstract void handleRecords (ConsumerRecords<K,V> records);
+	public abstract void handleRecords (ConsumerRecords<K,V> records);
 
 
 
 	// Lifecycle
 
-	protected void start (ComponentContext context) throws IncompleteKafkaConfigurationException {
+	@Activate
+	protected void activate (ComponentContext context) throws IncompleteKafkaConfigurationException {
 		topicName = PropertiesUtil.toString(context.getProperties().get(TOPICNAME), "");
 		if (StringUtils.isEmpty(topicName)) {
 			throw new IncompleteKafkaConfigurationException ("No topic configured");
@@ -86,7 +88,7 @@ public abstract class AbstractConsumer<K,V> implements Consumer {
 		props.put("group.id", groupId);
 		
 
-		prepareProperties(props);
+		props.putAll(setupCustomProperties()); 
 		consumer = new KafkaConsumer<>(props);
 		consumer.subscribe(Arrays.asList(new String[]{topicName}));
 		runnable = new KafkaConsumerRunner (this);
@@ -101,7 +103,7 @@ public abstract class AbstractConsumer<K,V> implements Consumer {
 
 
 
-	protected void stop () {
+	public void stop () {
 		runnable.shutdown();
 	}
 
@@ -111,6 +113,8 @@ public abstract class AbstractConsumer<K,V> implements Consumer {
 
 
 	public class KafkaConsumerRunner implements Runnable {
+		
+		private final Logger LOG = LoggerFactory.getLogger(KafkaConsumerRunner.class);
 		private final AtomicBoolean closed = new AtomicBoolean(false);
 		private final AbstractConsumer<K,V> consumer;
 
@@ -119,6 +123,7 @@ public abstract class AbstractConsumer<K,V> implements Consumer {
 		}
 
 		public void run() {
+			LOG.info ("Started KafkaConsumerRunner for {}", consumer.toString());
 			try {
 				while (!closed.get()) {
 					ConsumerRecords<K, V> records = consumer.consumer.poll(10000);
@@ -126,6 +131,7 @@ public abstract class AbstractConsumer<K,V> implements Consumer {
 				}
 			} catch (WakeupException e) {
 				// Ignore exception if closing
+				LOG.info("got exception",e);
 				if (!closed.get()) throw e;
 			} finally {
 				consumer.consumer.close();
@@ -135,6 +141,8 @@ public abstract class AbstractConsumer<K,V> implements Consumer {
 
 		// Shutdown hook which can be called from a separate thread
 		public void shutdown() {
+			LOG.info(StringUtils.join(new Throwable().getStackTrace(),"\n"));
+			LOG.info("initating shutdown for {}", consumer);
 			closed.set(true);
 			consumer.consumer.wakeup();
 		}

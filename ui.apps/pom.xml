@@ -130,16 +130,6 @@
                             <artifactId>org.apache.servicemix.bundles.kafka-clients</artifactId>
                             <target>/apps/kafka/install</target>
                         </embedded>
-                        <embedded>
-                            <groupId>de.joerghoh.aem</groupId>
-                            <artifactId>kafka-samples</artifactId>
-                            <target>/apps/kafka/install</target>
-                        </embedded>
-                        <embedded>               
-                            <groupId>org.apache.servicemix.bundles</groupId>
-                            <artifactId>org.apache.servicemix.bundles.avro</artifactId>
-                            <target>/apps/kafka/install</target>
-                        </embedded>
                     </embeddeds>
                 </configuration>
             </plugin>
@@ -221,12 +211,7 @@
             <artifactId>kafka-samples</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.adobe.aem</groupId>
-            <artifactId>aem-api</artifactId>
-        </dependency>
-
+   
         <dependency>
             <groupId>javax.jcr</groupId>
             <artifactId>jcr</artifactId>
@@ -241,10 +226,6 @@
             <groupId>com.day.cq.wcm</groupId>
             <artifactId>cq-wcm-taglib</artifactId>
         </dependency>
-    
-        <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.avro</artifactId>
-        </dependency>
+   
     </dependencies>
 </project>
