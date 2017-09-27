@@ -28,7 +28,7 @@ import de.joerghoh.aem.kafka.consumer.AbstractConsumer.KafkaConsumerRunner;
 public abstract class AbstractProducer<K,V> {
 
 	
-	private static Logger log = LoggerFactory.getLogger(AbstractConsumer.class);
+	private static Logger log = LoggerFactory.getLogger(AbstractProducer.class);
 
 	@Property(label="Topic", description="The kafka topic to post to")
 	private static final String TOPICNAME = "kafka.topicName";
